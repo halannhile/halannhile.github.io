@@ -6,8 +6,13 @@ redirect_from:
   - /about/
   - /about.html
 ---
+Hi, I'm Nhi 👋
+======
+I come from a statistics & maths undergraduate background and have 2 years of work experience as a Data Scientist & Machine Learning Engineer, deploying various large-scale AI/ML applications (recommender systems, chatbots, transformers-based NLP features), serving millions of customers.
 
-This is the front page of a website that is powered by the [Academic Pages template](https://github.com/academicpages/academicpages.github.io) and hosted on GitHub pages. [GitHub pages](https://pages.github.com) is a free service in which websites are built and hosted from code and data stored in a GitHub repository, automatically updating when a new commit is made to the respository. This template was forked from the [Minimal Mistakes Jekyll Theme](https://mmistakes.github.io/minimal-mistakes/) created by Michael Rose, and then extended to support the kinds of content that academics have: publications, talks, teaching, a portfolio, blog posts, and a dynamically-generated CV. You can fork [this repository](https://github.com/academicpages/academicpages.github.io) right now, modify the configuration and markdown files, add your own PDFs and other content, and have your own site for free, with no ads! An older version of this template powers my own personal website at [stuartgeiger.com](http://stuartgeiger.com), which uses [this Github repository](https://github.com/staeiou/staeiou.github.io).
+My research interests include graph machine learning, multimodal learning.
+
+I am open to full-time positions starting May 2025 in Applied Science, Machine Learning, Data Science, Machine Learning Software Engineering.
 
 A data-driven personal website
 ======

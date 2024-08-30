@@ -1,6 +1,6 @@
 ---
 layout: archive
-title: "Sitemap"
+title: "Built from Academic Pages"
 permalink: /sitemap/
 author_profile: true
 ---
