@@ -15,11 +15,11 @@ My research interests include graph machine learning, multimodal learning. I am 
 
 I am currently completing my M.S. in Computer Science at Brandeis University (Massachusetts, US). Before joining Brandeis, I received my B.S. from Monash University (Melbourne, Australia), where I worked as an undergraduate research assistant under [Professor Buser Say](https://saybuser.github.io/).
 
-*I am open to full-time positions starting May 2025 in Applied Science, Machine Learning, Data Science, Machine Learning Software Engineering.*
+**I am open to full-time positions starting May 2025 in Applied Science, Machine Learning, Data Science, Machine Learning Software Engineering.**
 
 Experience At A Glance
 ======
-* Jun 2024 - Present: **Graduate Research Assistant** - [**MINDS Lab**](https://chuxuzhang.github.io/Lab/lab_index.html) (Machine Intelligence and Data Science Lab), supervised by [Professor Chuxu Zhang](https://chuxuzhang.github.io/)
+* Jun 2024 - Present: **Graduate Research Assistant** - [**MINDS Lab**](https://chuxuzhang.github.io/Lab/lab_index.html), supervised by [Professor Chuxu Zhang](https://chuxuzhang.github.io/)
 
 * May 2024 - Aug 2024: **Machine Learning Engineer Intern** - [**Adobe**](https://www.adobe.com/) - *San Jose, CA*
 
