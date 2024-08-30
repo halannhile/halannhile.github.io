@@ -15,7 +15,7 @@ My research interests include graph machine learning, multimodal learning. I am 
 
 I am currently completing my M.S. in Computer Science at Brandeis University (Massachusetts, US). Before joining Brandeis, I received my B.S. from Monash University (Melbourne, Australia), where I worked as an undergraduate research assistant under [Professor Buser Say](https://saybuser.github.io/).
 
-**I am open to full-time positions starting May 2025 in Applied Science, Machine Learning, Data Science, Machine Learning Software Engineering.**
+*I am open to full-time positions starting May 2025 in Applied Science, Machine Learning, Data Science, Machine Learning Software Engineering.*
 
 Experience At A Glance
 ======
