@@ -13,7 +13,7 @@ I am a passionate **Machine Learning Engineer & Researcher** with nearly **2 yea
 My research interests include graph machine learning, multimodal learning. I am part of the [MINDS Lab](https://chuxuzhang.github.io/Lab/lab_index.html) (Machine Intelligence and Data Science Lab), under the supervision of [Professor Chuxu Zhang](https://chuxuzhang.github.io/).
 
 
-I am currently completing my M.S. in Computer Science at Brandeis University, MA, USA. Before joining Brandeis, I received my B.S. at Monash University (Melbourne, Australia) in 2021, where I worked as an undergraduate research assistant under [Professor Buser Say](https://saybuser.github.io/).
+I am currently completing my M.S. in Computer Science at Brandeis University (Massachusetts, US). Before joining Brandeis, I received my B.S. from Monash University (Melbourne, Australia), where I worked as an undergraduate research assistant under [Professor Buser Say](https://saybuser.github.io/).
 
 **I am open to full-time positions starting May 2025 in Applied Science, Machine Learning, Data Science, Machine Learning Software Engineering.**
 
