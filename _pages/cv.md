@@ -9,7 +9,7 @@ redirect_from:
 
 {% include base_path %}
 
-<img src="/images/CV.png">
+<img src="/images/CV_Aug_24.png">
 
 
 <!-- Education
