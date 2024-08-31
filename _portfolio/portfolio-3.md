@@ -1,6 +1,6 @@
 ---
 title: "Image Classification for Hand-drawn Images from Pictionary Game"
-excerpt: "A speech-to-text system for Vietnamese language finetuned on OpenAI's Whisper model with a custom 100-hour speech corpus<br/><br/><img src='/images/whisper.png'>"
+excerpt: "A speech-to-text system for Vietnamese language finetuned on OpenAI's Whisper model with a custom 100-hour speech corpus<br/><br/><img src='/images/pictionary.png'>"
 collection: portfolio
 ---
 
