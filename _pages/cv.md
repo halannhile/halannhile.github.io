@@ -9,10 +9,12 @@ redirect_from:
 
 {% include base_path %}
 
-Education
+<img src="/images/CV.png">
+
+
+<!-- Education
 ======
-* Ph.D in Version Control Theory, GitHub University, 2018 (expected)
-* M.S. in Jekyll, GitHub University, 2014
+* M.S. in Computer Science, Brandeis University, 2023 - 2025 (expected)
 * B.S. in GitHub, GitHub University, 2012
 
 Work experience
@@ -61,4 +63,4 @@ Teaching
   
 Service and leadership
 ======
-* Currently signed in to 43 different slack teams
+* Currently signed in to 43 different slack teams -->
