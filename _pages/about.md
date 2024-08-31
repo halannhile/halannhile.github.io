@@ -28,3 +28,15 @@ Experience At A Glance
 * Jul 2021 - Feb 2022: **Undergraduate Research Assistant** - **Monash University**, supervised by [Professor Buser Say](https://saybuser.github.io/)
 
 * Nov 2020 - Feb 2021: **Data Science Intern** - [**Telstra**](https://www.telstra.com.au/) - *Melbourne, Australia*
+
+Education
+======
+* Aug 2023 - Expected May 2025: M.S. Computer Science - Brandeis University 
+
+  - Recipient of a $40,000 Merit Scholarship from the Michtom School of Computer Science.
+
+* Feb 2019 - Dec 2021: B.S. Actuarial Science - Monash University
+
+  - Department of Econometrics & Statistics 2020 Student Prize
+  
+  - Top 5% of 15,000 graduates in 2021
