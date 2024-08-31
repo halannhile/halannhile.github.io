@@ -1,5 +1,5 @@
 ---
-title: "Image Classification for Hand-drawn Images from Pictionary Game"
+title: "👉 Image Classification for Hand-drawn Images from Pictionary Game"
 excerpt: "This project was a Kaggle competition where the aim was to make accurate predictions on hand-drawn images of people playing Pictionary game, using different types of ML models for image classification<br/><br/><em>Keywords: Image Recognition, Deep Learning</em><br/><br/><img src='/images/pictionary.png'>"
 collection: portfolio
 ---

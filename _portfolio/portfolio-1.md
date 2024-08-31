@@ -1,5 +1,5 @@
 ---
-title: "RAG-based question-answering system"
+title: "👉 RAG-based question-answering system"
 excerpt: "An app that lets users upload multiple documents and engage in question-answering conversations.<br/><br/><em>Keywords: RAG, LLMs, Vector Database</em><br/><br/><img src='/images/rag_qa.png'>"
 collection: portfolio
 ---
