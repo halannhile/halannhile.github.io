@@ -4,6 +4,8 @@ excerpt: "A speech-to-text system for Vietnamese language finetuned on OpenAI's 
 collection: portfolio
 ---
 
+[**GitHub Repo**](https://github.com/halannhile/pictionary-image-classification/tree/main)
+
 ## Introduction 
 
 This project was a Kaggle competition where the aim was to make accurate predictions on hand-drawn images of people playing Pictionary game, using different types of ML models for image classification. 6 types of images were selected as the task: banana, boomerang, cactus, crab, flip flops and kangaroo. 
