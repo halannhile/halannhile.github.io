@@ -1,5 +1,5 @@
 ---
-title: "Paper Title Number 1"
+title: "Training Experimentally Robust and Interpretable Binarized Regression Models Using Mixed-Integer Programming"
 collection: publications
 category: manuscripts
 permalink: /publication/2009-10-01-paper-title-number-1
