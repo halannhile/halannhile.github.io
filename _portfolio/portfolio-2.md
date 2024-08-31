@@ -1,6 +1,6 @@
 ---
-title: "EasyTopics"
-excerpt: "A speech-to-text system for Vietnamese language finetuned on OpenAI's Whisper model with a custom speech corpus<br/><br/><img src='/images/whisper.png'>"
+title: "Vietnamese Whisper"
+excerpt: "A speech-to-text system for Vietnamese language finetuned on OpenAI's Whisper model with a custom 100-hour speech corpus<br/><br/><img src='/images/whisper.png'>"
 collection: portfolio
 ---
 
