@@ -3,7 +3,6 @@ title: "Image Classification for Hand-drawn Images from Pictionary Game"
 excerpt: "This project was a Kaggle competition where the aim was to make accurate predictions on hand-drawn images of people playing Pictionary game, using different types of ML models for image classification<br/><br/><img src='/images/pictionary.png'>"
 collection: portfolio
 ---
-<br/><br/>
 [**GitHub Repo**](https://github.com/halannhile/pictionary-image-classification/tree/main)
 ## Introduction 
 
