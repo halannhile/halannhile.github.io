@@ -8,7 +8,7 @@
 
 # Basic Site Settings
 locale                   : "en-US"
-title                    : "Nhi Le"
+title                    : "Nhi Le's Homepage"
 title_separator          : ""
 name                     : &name "Nhi Le"
 description              : &description "Machine Learning Engineer & Researcher"
