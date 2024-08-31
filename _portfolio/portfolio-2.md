@@ -1,6 +1,6 @@
 ---
 title: "Vietnamese Whisper"
-excerpt: "A speech-to-text system for Vietnamese language finetuned on OpenAI's Whisper model with a custom 100-hour speech corpus<br/><br/><img src='/images/whisper.png'>"
+excerpt: "A speech-to-text system for Vietnamese language finetuned on OpenAI's Whisper model with a custom 100-hour speech corpus<br/><br/>Keywords: Automated Speech Processing (ASR), Transformers<br/><img src='/images/whisper.png'>"
 collection: portfolio
 ---
 
