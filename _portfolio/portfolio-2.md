@@ -1,6 +1,6 @@
 ---
 title: "EasyTopics"
-excerpt: "A web app to detect, analyze and visualize topics from your documents using BERTopic Wikipedia<br/><br/><img src='/images/yourdocuments.png'>"
+excerpt: "A speech-to-text system for Vietnamese language finetuned on OpenAI's Whisper model with a custom speech corpus<br/><br/><img src='/images/whisper.png'>"
 collection: portfolio
 ---
 
