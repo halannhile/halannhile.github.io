@@ -1,6 +1,6 @@
 ---
 title: "EasyTopics"
-excerpt: "A web app to detect, analyze and visualize topics from your documents using BERTopic Wikipedia<br/><br/>Keywords: NLP, Transformers<br/><img src='/images/yourdocuments.png'>"
+excerpt: "A web app to detect, analyze and visualize topics from your documents using BERTopic Wikipedia<br/><em>Keywords: NLP, Transformers</em><br/><br/><img src='/images/yourdocuments.png'>"
 collection: portfolio
 ---
 
