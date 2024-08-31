@@ -1,27 +1,13 @@
 ---
-title: "Image Classification for Hand-drawn Images from Pictionary Game"
-excerpt: "This project was a Kaggle competition where the aim was to make accurate predictions on hand-drawn images of people playing Pictionary game, using different types of ML models for image classification<br/><br/><em>Keywords: Image Recognition, Deep Learning</em><br/><br/><img src='/images/pictionary.png'>"
+title: "Vietnamese Whisper"
+excerpt: "A speech-to-text system for Vietnamese language finetuned on OpenAI's Whisper model with a custom 100-hour speech corpus<br/><br/><em>Keywords: Automated Speech Processing (ASR), Transformers</em><br/><br/><img src='/images/whisper.png'>"
 collection: portfolio
 ---
-[**GitHub Repo**](https://github.com/halannhile/pictionary-image-classification/tree/main)
-## Introduction 
 
-This project was a Kaggle competition where the aim was to make accurate predictions on hand-drawn images of people playing Pictionary game, using different types of ML models for image classification. 6 types of images were selected as the task: banana, boomerang, cactus, crab, flip flops and kangaroo. 
+[**GitHub Repo**](https://github.com/halannhile/whisper-vietnamese)
 
-<img src="/images/pictionary.png" width="800">
+A speech-to-text system for Vietnamese language finetuned on OpenAI's Whisper model with a custom speech corpus.
 
-The best performing solution was CNNs 
+* This builds upon the previous part of creating a custom corpus for Vietnamese using Montreal Forced Aligner (view part 1 of the project [here](https://github.com/halannhile/vietnamese-asr-corpus)).
 
-## Architecture of CNNs 
-
-<img src="/images/CNNs.jpg" width="800">
-
-## Report & Code
-
-[**Project Report**](https://drive.google.com/file/d/16ixifGk9EpleNRpn4dzpcLpX0fuovp9f/view)
-
-[**Code for CNNs**](https://github.com/halannhile/pictionary-image-classification/tree/main/CNNs)
-
-[**Code for Random Forests**](https://github.com/halannhile/pictionary-image-classification/blob/main/Random%20Forests.Rmd)
-
-[**Code for XGBoost**](https://github.com/halannhile/pictionary-image-classification/blob/main/XGBoost.Rmd)
+* For a full description of the project, please see the [report](https://github.com/halannhile/whisper-vietnamese/blob/master/report/project-report.pdf).
