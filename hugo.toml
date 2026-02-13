@@ -1,0 +1,50 @@
+baseURL = 'https://halannhile.github.io/'
+languageCode = 'en-us'
+title = "Nhi's blog"
+theme = 'PaperMod'
+
+[params]
+  author = 'Nhi'
+  description = "Nhi's blog"
+
+  [params.homeInfoParams]
+    title = "👋 Welcome to Nhi's blog"
+    content = "Hi, this is Nhi. This blog is where I document and share my learnings in AI. All feedback and collaboration invites are welcome!"
+
+  [params.assets]
+    favicon = "favicon.ico"
+    theme_color = "#2e2e33"
+    msapplication_TileColor = "#2e2e33"
+
+  # [params.socialIcons]
+  #   [[params.socialIcons]]
+  #     name = "github"
+  #     url = "https://github.com/yourusername"
+
+  [params.footer]
+    text = "Inspired by [Lil'Log](https://lilianweng.github.io/)"
+
+[menu]
+  [[menu.main]]
+    name = "Posts"
+    url = "/"
+    weight = 10
+  [[menu.main]]
+    name = "Archive"
+    url = "/archives/"
+    weight = 20
+  [[menu.main]]
+    name = "Search"
+    url = "/search/"
+    weight = 30
+  [[menu.main]]
+    name = "Tags"
+    url = "/tags/"
+    weight = 40
+  [[menu.main]]
+    name = "About"
+    url = "/about/"
+    weight = 50
+
+[outputs]
+  home = ['HTML', 'RSS', 'JSON']

@@ -1,0 +1,14 @@
+<script>
+(function() {
+  function syncThemeToBody() {
+    if (document.documentElement.dataset.theme === 'dark') {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+  }
+  syncThemeToBody();
+  var observer = new MutationObserver(syncThemeToBody);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+})();
+</script>
