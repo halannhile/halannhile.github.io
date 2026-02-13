@@ -9,7 +9,7 @@ theme = 'PaperMod'
 
   [params.homeInfoParams]
     title = "👋 Hi there"
-    content = "Documenting and sharing my learnings in AI. All feedback and collaboration invites are welcome!"
+    content = "Documenting and sharing my AI learnings exactly how I understand them. Feedback and collaboration invites are always welcome."
 
   [params.assets]
     favicon = "favicon.ico"
