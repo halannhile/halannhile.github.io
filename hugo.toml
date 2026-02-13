@@ -8,8 +8,8 @@ theme = 'PaperMod'
   description = "Nhi's blog"
 
   [params.homeInfoParams]
-    title = "👋 Welcome to Nhi's blog"
-    content = "Hi, this is Nhi. This blog is where I document and share my learnings in AI. All feedback and collaboration invites are welcome!"
+    title = "👋 Hi there"
+    content = "Documenting and sharing my learnings in AI. All feedback and collaboration invites are welcome!"
 
   [params.assets]
     favicon = "favicon.ico"
