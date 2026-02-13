@@ -16,10 +16,10 @@ theme = 'PaperMod'
     theme_color = "#2e2e33"
     msapplication_TileColor = "#2e2e33"
 
-  # [params.socialIcons]
-  #   [[params.socialIcons]]
-  #     name = "github"
-  #     url = "https://github.com/yourusername"
+    [[params.socialIcons]]
+      name = "github"
+      url = "https://github.com/halannhile"
+      title = "GitHub"
 
   [params.footer]
     text = "Inspired by [Lil'Log](https://lilianweng.github.io/)"
