@@ -43,5 +43,12 @@ theme = 'PaperMod'
     url = "/about/"
     weight = 50
 
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+    noClasses = false
+
 [outputs]
   home = ['HTML', 'RSS', 'JSON']

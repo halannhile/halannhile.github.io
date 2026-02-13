@@ -16,3 +16,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# About page: use about.html only (so HTML renders). Ignore about.md if recreated.
+content/about.md

@@ -1,0 +1,96 @@
+/* Publication boxes - image left, content right */
+.post-content .paper-box,
+.paper-box {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 20px !important;
+  margin-bottom: 30px;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--entry);
+  align-items: flex-start;
+}
+
+.post-content .paper-box-image,
+.paper-box-image {
+  flex-shrink: 0 !important;
+  width: 200px !important;
+  max-width: 200px !important;
+  min-width: 200px !important;
+}
+
+.post-content .paper-box-image img,
+.paper-box-image img {
+  width: 100% !important;
+  max-width: 200px !important;
+  height: auto !important;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  display: block;
+}
+
+.post-content .paper-box-text,
+.paper-box-text {
+  flex: 1 !important;
+  min-width: 0;
+}
+
+.paper-box-text a {
+  font-weight: 500;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.paper-box-text a:hover {
+  text-decoration: underline;
+}
+
+.paper-box-text em {
+  color: var(--secondary);
+  font-style: normal;
+  font-size: 0.9em;
+}
+
+.paper-box-text strong {
+  font-weight: 600;
+}
+
+.paper-links {
+  margin-top: 8px;
+}
+
+.paper-links em,
+.paper-links a {
+  font-size: 0.9em;
+  display: inline;
+}
+
+.paper-links em {
+  margin-right: 12px;  /* same as gap between Paper and Code */
+}
+
+.paper-links a {
+  margin-right: 12px;
+}
+
+/* Responsive: stack on mobile */
+@media screen and (max-width: 768px) {
+  .post-content .paper-box,
+  .paper-box {
+    flex-direction: column !important;
+  }
+  
+  .post-content .paper-box-image,
+  .paper-box-image {
+    width: 100% !important;
+    max-width: 300px !important;
+    min-width: auto !important;
+    margin: 0 auto;
+  }
+  
+  .post-content .paper-box-image img,
+  .paper-box-image img {
+    max-width: 100% !important;
+  }
+}
