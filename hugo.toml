@@ -21,9 +21,6 @@ theme = 'PaperMod'
       url = "https://github.com/halannhile"
       title = "GitHub"
 
-  [params.footer]
-    text = "Inspired by [Lil'Log](https://lilianweng.github.io/)"
-
 [menu]
   [[menu.main]]
     name = "Posts"
