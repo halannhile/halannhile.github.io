@@ -1,3 +1,8 @@
+/* List pages (home, archive, search, tags): white background in light mode like About page */
+body.list:not(.dark) {
+  background: var(--theme) !important;
+}
+
 /* Publication boxes - image left, content right */
 .post-content .paper-box,
 .paper-box {
