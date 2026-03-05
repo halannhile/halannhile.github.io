@@ -1,6 +1,6 @@
 baseURL = 'https://halannhile.github.io/'
 languageCode = 'en-us'
-title = "Nhi's blog"
+title = "Ancora Imparo"
 theme = 'PaperMod'
 
 [params]
@@ -8,11 +8,8 @@ theme = 'PaperMod'
   description = "Nhi's blog"
 
   [params.homeInfoParams]
-    title = "👋 Hi there"
-    content = """A space where I document and distill (pun intended) my AI learnings into beginner-friendly explanations. Feedback and collaboration are always welcome.
-
-
-Still cooking up my first blog post, coming soon!"""
+    title = "👋 Hi, I'm Nhi"
+    content = """Ancora Imparo, Italian for "I am still learning", is the motto of my alma mater. This blog is the space where I document and distill (pun intended) my AI learnings into beginner-friendly explanations. No AI-generated content, just my own thoughts."""
 
   [params.assets]
     favicon = "favicon.ico"
