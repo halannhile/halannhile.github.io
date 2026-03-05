@@ -1,5 +1,5 @@
 ---
-title: "why I started this blog"
+title: "Why I started this blog"
 date: 2025-03-05T00:00:00Z
 draft: false
 tags: ["non-technical"]
@@ -9,7 +9,7 @@ Hi there, welcome to my little corner on the internet.
 
 For the longest time, I've always had a deep appreciation for people who are not only smart (the definition of "smart" is multifaceted here), but also generous enough to synthesize and share their learnings to the world. Blog posts, Youtube channels, GitHub repos, online courses, books, kind strangers on the internet, etc. -  these are all the resources that have helped me go from someone who felt stuck with having to complete a bachelor degree that did not interest them in the slightest bit, to someone who is finally in a place where they have the privilege of feeling overwhelmed by the amount of possibilities they have access to every single day. 
 
-The TLDR is, in college, with the limited knowledge and life experience of a 19-year-old, I chose to major in a field which I ended up absolutely hating and questioning my life choice every single day for many years in my early 20s (spoiler alert: it was Actuarial Science, no offense to those who are passionate about this field!). It took 5 long years since the day I discovered the amazing world of programming for me to finally achieving my dream of working as an engineer at a big tech company in Silicon Valley (my apologies if you hate this term, I just think it still very much embodies a dream that so many people, including me, hold dear to their heart). The list of those whose generosity I have immensely benefitted from in the pursuit of my dreams is simply too long to expand here. This blog is an attempt at paying it forward to the best of my ability.
+The TLDR is, in college, with the limited knowledge and life experience of a 19-year-old, I chose to major in a field which I ended up absolutely hating and questioning my life choice every single day for many years in my early 20s (spoiler alert: it was Actuarial Science, no offense to those who are passionate about this field!). It took 5 long years since the day I discovered the amazing world of programming for me to finally achieve my dream of working as an engineer at a big tech company in Silicon Valley (my apologies if you hate this term, I just think it still very much embodies a dream that so many people, including me, hold dear to their heart). The list of those whose generosity I have immensely benefitted from in the pursuit of my dreams is simply too long to expand here. This blog is an attempt at paying it forward to the best of my ability.
 
 The question is, why did I choose to create a blog? Don't we have too many of them, technical and non-technical alike, already? And besides, who even consumes this kind of slow, low-stimulation content anymore? The answers to these questions reveal that actually, I am creating this blog also *for myself.*
 
