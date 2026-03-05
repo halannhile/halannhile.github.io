@@ -1,6 +1,6 @@
 baseURL = 'https://halannhile.github.io/'
 languageCode = 'en-us'
-title = "ancora imparo"
+title = "Home"
 theme = 'PaperMod'
 
 [params]
