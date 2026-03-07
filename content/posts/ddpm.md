@@ -770,7 +770,7 @@ for epoch in range(args.epochs):
 
 $$\text{shadow} \leftarrow \text{decay} \times \text{shadow} + (1 - \text{decay}) \times \text{param}$$
 
-With `decay=0.9999`, the shadow only moves 0.01% toward the current weights each step, effectively averaging across the last ~10,000 steps. At inference time, we temporarily swap in the shadow weights (`ema.apply_shadow()`), generate samples, then restore the live weights (`ema.restore()`). **Forgetting `restore()` is a silent bug — training would continue updating the shadow directly, destroying the averaging.**
+With `decay=0.9999`, the shadow only moves 0.01% toward the current weights each step, effectively averaging across the last ~10,000 steps. At inference time, we temporarily swap in the shadow weights (`ema.apply_shadow()`), generate samples, then restore the live weights (`ema.restore()`). **Forgetting `restore()` is a silent bug - training would continue updating the shadow directly, destroying the averaging.**
 
 3. We must never forget to use `optimizer.zero_grad()` - this is a classic mistake that I still make once in while. 
 
