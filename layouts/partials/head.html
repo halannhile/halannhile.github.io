@@ -38,6 +38,15 @@
 
 <link crossorigin="anonymous" href="{{ "assets/css/stylesheet.css" | absURL }}" rel="preload stylesheet" as="style">
 <link crossorigin="anonymous" href="{{ "assets/css/publications.css" | absURL }}" rel="stylesheet" as="style">
+<link crossorigin="anonymous" href="{{ "assets/css/toc-sidebar.css" | absURL }}" rel="stylesheet">
+
+{{- /* Syntax highlighting (Chroma) - load theme's chroma CSS so code blocks are colorized */}}
+{{- $chroma_styles := resources.Get "css/includes/chroma-styles.css" }}
+{{- $chroma_mod := resources.Get "css/includes/chroma-mod.css" }}
+{{- if and $chroma_styles $chroma_mod }}
+<link rel="stylesheet" href="{{ $chroma_styles.RelPermalink }}">
+<link rel="stylesheet" href="{{ $chroma_mod.RelPermalink }}">
+{{- end }}
 
 {{- /* Search */}}
 {{- if (eq .Layout `search`) -}}
