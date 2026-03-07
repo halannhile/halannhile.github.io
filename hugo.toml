@@ -9,7 +9,7 @@ theme = 'PaperMod'
 
   [params.homeInfoParams]
     title = "👋 Hi, I'm Nhi"
-    content = """Writing about topics I'm currently fascinated about in the AI space. "Ancora Imparo"."""
+    content = """Writing about topics I'm currently fascinated about in the AI space. No AI-generated content, just my own thoughts. "Ancora Imparo"."""
 
   [params.assets]
     favicon = "favicon.ico"
