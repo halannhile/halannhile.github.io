@@ -1,5 +1,5 @@
 ---
-title: "The Essence of Original Thinking"
+title: "The essence of original thinking"
 date: 2025-03-09T00:00:00Z
 draft: false
 tags: ["non-technical"]
