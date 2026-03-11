@@ -32,6 +32,10 @@ One of the places my curiosity took me to recently is Diffusion Models. Let's st
 
 [Section 3: Recap & What's Next](#section-3-recap--whats-next)
 
+[Useful Resources](#useful-resources)
+
+[Citation](#citation)
+
 ---
 
 # Section 1: Theory 
@@ -857,4 +861,25 @@ PyTorch:
 
 * [w86763777/pytorch-ddpm](https://github.com/w86763777/pytorch-ddpm)
  
-* [abarankab/DDPM](https://github.com/abarankab/DDPM?tab=readme-ov-file) 
+* [abarankab/DDPM](https://github.com/abarankab/DDPM?tab=readme-ov-file)
+
+---
+
+# Citation
+
+```
+Le, Nhi. "Diffusion Models - Part 1: DDPM". halannhile.github.io (March 2025). https://halannhile.github.io/posts/ddpm/
+```
+
+**BibTeX:**
+
+```bibtex
+@article{nhi2025ddpm,
+  title = {Diffusion Models - Part 1: DDPM},
+  author = {Nhi},
+  journal = {halannhile.github.io},
+  year = {2025},
+  month = {March},
+  url = "https://halannhile.github.io/posts/ddpm/"
+}
+```
