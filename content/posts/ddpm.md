@@ -398,7 +398,7 @@ You'll notice that I bolded the phrase **"in DDPM"** above. This is because ther
 
 * **Transformer**: DiT (Diffusion Transformers) ([Peebles & Xie, 2022](https://arxiv.org/abs/2212.09748)) was the first paper that made the serious case for replacing U-Net with a Vision Transformer. DiT is now the dominant architecture that pretty much displaced U-Net. Stable Diffusion 3, Flux, Sora, and most modern production systems all use transformer-based backbones. *I will have a deep-dive blog into DiT later!*
 
-{{< figure align=center src="/images/unet.png" alt="U-Net architecture" title="The original U-Net architecture" caption="[Image source: Ronneberger, 2015](https://arxiv.org/abs/1505.04597)" width="70%" >}}
+{{< figure align=center src="/images/ddpm-unet.png" alt="U-Net architecture" title="The original U-Net architecture" caption="[Image source: Ronneberger, 2015](https://arxiv.org/abs/1505.04597)" width="70%" >}}
 
 Below is the U-Net architecture I actually implemented: 
 
@@ -449,7 +449,7 @@ class SinusoidalPositionEmbeddings(nn.Module):
 
         # create frequency terms: 1/10000^(2i/d)
         embeddings = math.log(10000) / (half_dim - 1)
-        embeddings = torch.exp(torch.arrange(half_dim, device=device), * -embeddings)
+        embeddings = torch.exp(torch.arange(half_dim, device=device), * -embeddings)
 
         # ===== MULTIPLY TIMESTEPS BY FREQUENCIES =====
         # Broadcasting: [B, 1] * [1, half_dim] = [B, half_dim]
@@ -795,13 +795,42 @@ transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
 
 Please visit my [GitHub repo](https://github.com/halannhile/ddpm) for full code and instructions.
 
+Here are some results from training on MNIST for 50 epochs, using the following configs:
+
+```python
+BATCH_SIZE = 128
+IMAGE_SIZE = 32
+LR = 2e-4
+NUM_TIMESTEPS = 1000
+SCHEDULE_TYPE = "cosine"
+SAVE_EVERY = 10
+SAMPLE_EVERY = 5
+```
+
+Even with only ~1 hour of training on a single T4 GPU, results are pretty good: 
+
+{{< figure align=center src="/images/ddpm-mnist-generated-grid.png" alt="MNIST 128 samples" title="Sampling 128 MNIST 32x32 images" caption="" >}}
+
+
+{{< figure align=center src="/images/ddpm-mnist-0.png" alt="MNIST 0" title="Generating a hand-written number 0 from Gaussian noise. Note: This one was from the final best checkpoint hence the denoising process is very quick and the final generated image has high resolution" caption="" >}}
+
+{{< figure align=center src="/images/ddpm-mnist-8.png" alt="MNIST 8" title="Generating a hand-written number 8 from Gaussian noise" caption="" >}}
+
+{{< figure align=center src="/images/ddpm-mnist-1.png" alt="MNIST 1" title="Generating a hand-written number 1 from Gaussian noise" caption="" >}}
+
+{{< figure align=center src="/images/ddpm-mnist-7.png" alt="MNIST 7" title="Generating a hand-written number 7 from Gaussian noise" caption="" >}}
+
+I attempted to train on CIFAR-10 but could only get to 250 epochs due to a lack of access to GPUs, now that I'm not working in a research group anymore. Hence results are not good enough to showcase here. In the original DDPM paper, the CIFAR-10 model was trained for 800,000 iterations rather than a specific number of epochs. With a batch size of 128, this equates to approximately 2,048 epochs. 
+
+**A few closing thoughts:**
+
 The math in DDPM is non-trivial to derive but everything can be simplified into a simple MSE loss, and once we have all the formulas, the implementation is surprisingly clean where each equation maps directly to a few lines of Python.
 
 I had a lot of fun learning from and reimplementing this classic diffusion models paper - the math is actually so elegant to me!  
 
 In the next posts, I plan to discuss **Improved Denoising Diffusion Probabilistic Models** ([Nichol & Dhariwal, 2021](https://arxiv.org/abs/2102.09672)), which introduces the cosine schedule (already implemented here), learned variance, and other tweaks that improve sample quality significantly. 
 
-After that, we'll get into **Denoising Diffusion Implicit Models (DDIM)** ([Song et al., 2021](https://arxiv.org/abs/2010.02502)), which dramatically speeds up sampling from 1000 steps to as few as 50.
+After that, we'll get into **Denoising Diffusion Implicit Models (DDIM)** ([Song et al., 2021](https://arxiv.org/abs/2010.02502)), which dramatically speeds up sampling from 1000 steps to as few as 50. *As you can see from the generated MNIST samples above, it took 1,000 denoising timesteps to get the final result.*
 
 ---
 

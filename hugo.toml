@@ -6,6 +6,7 @@ theme = 'PaperMod'
 [params]
   author = 'Nhi'
   description = "Nhi's blog"
+  mainSections = ['posts']
 
   [params.homeInfoParams]
     title = "👋 Hi, I'm Nhi"
@@ -23,9 +24,13 @@ theme = 'PaperMod'
 
 [menu]
   [[menu.main]]
-    name = "Posts"
+    name = "AI Notes"
     url = "/"
     weight = 10
+  [[menu.main]]
+    name = "Random Notes"
+    url = "/random-notes/"
+    weight = 15
   [[menu.main]]
     name = "Archive"
     url = "/archives/"
