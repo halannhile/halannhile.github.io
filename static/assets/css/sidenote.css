@@ -1,0 +1,31 @@
+/* Right-hand sidenote box that lives in the outer margin (does not shrink main text) */
+
+@media (min-width: 1200px) {
+  .sidenote {
+    float: right;
+    clear: right;
+    width: 240px;
+    margin: 0.1rem 0 0.6rem 1.25rem;
+    /* Push the box out into the right margin beyond the main text width */
+    margin-right: -260px;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.9rem;
+    color: var(--secondary);
+    background: var(--code-bg);
+    border-radius: var(--radius);
+  }
+}
+
+@media (max-width: 1199px) {
+  .sidenote {
+    float: none;
+    width: 100%;
+    margin: 0.75rem 0;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.9rem;
+    color: var(--secondary);
+    background: var(--code-bg);
+    border-radius: var(--radius);
+  }
+}
+
