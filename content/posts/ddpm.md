@@ -868,7 +868,7 @@ PyTorch:
 # Citation
 
 ```
-Le, Nhi. "Diffusion Models - Part 1: DDPM". halannhile.github.io (March 2025). https://halannhile.github.io/posts/ddpm/
+Le, Nhi. "Diffusion Models - Part 1: DDPM". halannhile.github.io (March 2026). https://halannhile.github.io/posts/ddpm/
 ```
 
 **BibTeX:**
@@ -878,7 +878,7 @@ Le, Nhi. "Diffusion Models - Part 1: DDPM". halannhile.github.io (March 2025). h
   title = {Diffusion Models - Part 1: DDPM},
   author = {Nhi},
   journal = {halannhile.github.io},
-  year = {2025},
+  year = {2026},
   month = {March},
   url = "https://halannhile.github.io/posts/ddpm/"
 }
