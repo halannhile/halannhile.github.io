@@ -7,9 +7,9 @@ math: true
 ShowToc: false
 ---
 
-*Update: I am still working on finalizing my GitHub repo for DDPM PyTorch implementation, come check it out later. For now, please enjoy the blog!*
-
 One of the places my curiosity took me to recently is Diffusion Models. Let's start with **Denoising Diffusion Probabilistic Models** (**DDPM**; [Ho et al. 2020](https://arxiv.org/abs/2006.11239)).
+
+*The GitHub repo for my PyTorch implementation of DDPM with instructions on how to train and generate images can be found here: [halannhile/ddpm](https://github.com/halannhile/ddpm).*
 
 ---
 
