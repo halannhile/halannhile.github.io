@@ -1,6 +1,6 @@
 ---
 title: "Why I started this blog"
-date: 2025-03-05T00:00:00Z
+date: 2026-03-05T00:00:00Z
 draft: false
 tags: ["non-technical"]
 ---

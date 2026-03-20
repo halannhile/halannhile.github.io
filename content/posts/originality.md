@@ -1,13 +1,13 @@
 ---
 title: "The essence of original thinking"
-date: 2025-03-09T00:00:00Z
-draft: false
+date: 2026-03-09T00:00:00Z
+draft: true
 tags: ["non-technical"]
 math: true
 ShowToc: false
 ---
 
-Lately I've been thinking about what it really means to think originally. Let's say, in reaction to some unpleasant discoveries. 
+Lately I've been thinking about what it really means to think originally. 
 
 I'm by no means the first person to do many of the things I explore. A lot of the questions I care about were stirred up by reading other people's work, learning from researchers, engineers, and writers whose thinking inspired me. Inspiration is part of the process. None of us work in isolation. What matters, at least to me, is what happens after that moment of inspiration. Once an idea sparks my curiosity, I try to follow it in my own way - asking my own questions, exploring paths and their tangents that genuinely interest me, and letting my thinking evolve naturally from there. That's where a sense of originality comes from: not from inventing ideas out of thin air, but from having a strong enough sense of self to shape them into something uniquely your own. 
 

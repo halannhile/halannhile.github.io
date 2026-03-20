@@ -1,6 +1,6 @@
 ---
 title: "Diffusion Models - Part 2: Improved DDPM"
-date: 2025-03-12T00:00:00Z
+date: 2026-03-12T00:00:00Z
 draft: false
 tags: ["diffusion-models", "image-generation"]
 math: true
