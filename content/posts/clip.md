@@ -219,7 +219,7 @@ In CLIP specifically, temperature rescales similarities before softmax, controll
 
 Making $\tau$ learnable rather than fixed is a small but important choice - the right temperature turns out to be data-dependent, so letting the model figure it out during training works better than setting it manually.
 
-### Training at scale 
+## 5. Training at scale 
 
 The scale of CLIP's training is not incidental but is actually the whole point. 
 
