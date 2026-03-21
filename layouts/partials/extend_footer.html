@@ -1,5 +1,26 @@
 <script>
 (function() {
+  function readSavedTheme() {
+    try {
+      var v = localStorage.getItem("pref-theme");
+      if (v === "dark" || v === "light") return v;
+    } catch (e) {}
+    var m = document.cookie.match(/(?:^|; )pref-theme=([^;]*)/);
+    if (m) {
+      var c = decodeURIComponent(m[1] || "");
+      if (c === "dark" || c === "light") return c;
+    }
+    return null;
+  }
+
+  // Re-apply persisted theme after body exists (Lil'Log-style timing).
+  var saved = readSavedTheme();
+  if (saved === "dark") {
+    document.documentElement.dataset.theme = "dark";
+  } else if (saved === "light") {
+    document.documentElement.dataset.theme = "light";
+  }
+
   function syncThemeToBody() {
     if (document.documentElement.dataset.theme === 'dark') {
       document.body.classList.add('dark');
