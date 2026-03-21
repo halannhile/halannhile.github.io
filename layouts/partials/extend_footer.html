@@ -1,15 +1,16 @@
 <script>
 (function() {
   function readSavedTheme() {
-    try {
-      var v = localStorage.getItem("pref-theme");
-      if (v === "dark" || v === "light") return v;
-    } catch (e) {}
+    // Prefer cookie first, then localStorage as fallback.
     var m = document.cookie.match(/(?:^|; )pref-theme=([^;]*)/);
     if (m) {
       var c = decodeURIComponent(m[1] || "");
       if (c === "dark" || c === "light") return c;
     }
+    try {
+      var v = localStorage.getItem("pref-theme");
+      if (v === "dark" || v === "light") return v;
+    } catch (e) {}
     return null;
   }
 

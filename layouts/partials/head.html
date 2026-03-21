@@ -120,14 +120,18 @@
 <script>
     (function() {
         function getSavedTheme() {
-            // Prefer localStorage, but fall back to a cookie in case localStorage isn't shared.
+            // Prefer cookie first (shared more reliably across browser tabs/origins),
+            // then fall back to localStorage.
+            var m = document.cookie.match(/(?:^|; )pref-theme=([^;]*)/);
+            if (m) {
+                var c = decodeURIComponent(m[1] || "");
+                if (c === "dark" || c === "light") return c;
+            }
+
             try {
                 var v = localStorage.getItem("pref-theme");
                 if (v === "dark" || v === "light") return v;
             } catch (e) {}
-
-            var m = document.cookie.match(/(?:^|; )pref-theme=([^;]*)/);
-            if (m && (m[1] === "dark" || m[1] === "light")) return m[1];
 
             return null;
         }
