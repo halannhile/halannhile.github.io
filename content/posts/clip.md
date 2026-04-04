@@ -102,7 +102,7 @@ After L2 normalization, cosine similarity reduces to a dot product: $\text{sim}(
 
 The text encoder $g(\cdot)$ maps a text string to a vector in the same $d$-dimensional space. It's a **Transformer** ([Vaswani et al., 2017](https://arxiv.org/abs/1706.03762)) - specifically, a 63M-parameter model with 12 layers, 512-wide, and 8 attention heads - essentially a GPT-2-scale model.
 
-The input text is tokenized using a **byte-pair encoding (BPE)**$^3$ vocabulary of 49,152 tokens.
+The input text is tokenized using a **byte-pair encoding (BPE)**$^3$ vocabulary of 49,408 tokens.
 
 {{< sidenote >}}
 $^3$**What is BPE tokenization?**
@@ -282,7 +282,7 @@ This is exactly why finetuning CLIP matters so much in practice. A generic CLIP 
 
 # Section 2: Code
 
-*I'm working on a mini-CLIP implementation from scratch in PyTorch, with: a small ViT image encoder, a small transformer text encoder, trained contrastively on a subset of the [CC3M dataset](https://ai.google.com/research/ConceptualCaptions/). I hope I can demonstrate exactly how the similarity matrix, the InfoNCE loss, and the temperature parameter look in real code.*
+*I'm working on a mini-CLIP implementation from scratch in PyTorch, with: a small ViT image encoder, a small transformer text encoder, trained contrastively on [Flickr30k](https://huggingface.co/datasets/nlphuji/flickr30k). I hope I can demonstrate exactly how the similarity matrix, the InfoNCE loss, and the temperature parameter look in real code.*
 
 *The GitHub repo link will be added here when ready.*
 
