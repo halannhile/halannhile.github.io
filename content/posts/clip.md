@@ -30,6 +30,14 @@ One of the earliest and most fundamental questions I had regarding multimodal AI
 7. [A few caveats](#7-a-few-caveats)
 
 [Section 2: Code](#section-2-code)
+1. [Dataset](#1-dataset)
+2. [Image encoder](#2-image-encoder)
+3. [Text encoder](#3-text-encoder)
+4. [The similarity matrix and InfoNCE loss](#4-the-similarity-matrix-and-infonce-loss)
+5. [Temperature](#5-temperature)
+6. [Optimizer and learning rate](#6-optimizer-and-learning-rate)
+7. [MPS optimizations](#7-mps-optimizations)
+8. [Retrieval evaluation](#8-retrieval-evaluation)
 
 [Section 3: Results from the trained model](#section-3-results-from-the-trained-model)
 
@@ -290,11 +298,11 @@ My implementation is a single-file PyTorch mini-CLIP (`clip_single.py`), trained
 
 I mean, isn't this beautiful:
 
-{{< figure align=center src="/images/clip-karpathy-microgpt.png" alt="clip-karpathy-microgpt" title="Andrej Karpathy's microgpt blog" caption="[Andrej Karpathy blog: microgpt](https://karpathy.github.io/2026/02/12/microgpt/)" width="100%" >}}
+{{< figure align=center src="images/clip-karpathy-microgpt.png" alt="clip-karpathy-microgpt" title="Andrej Karpathy's microgpt blog" caption="[Andrej Karpathy blog: microgpt](https://karpathy.github.io/2026/02/12/microgpt/)" width="100%" >}}
 
 There are 2 main reasons I will take this approach moving forward. One, it challenged me to figure out what the absolute core essentials of the model are. Second, it significantly speeds up my coding time, which then allows me to read and reimplement more papers (TL;DR: I realized I spent way too much time on DDPM and Improved DDPM, which clearly isn't sustainable). 
 
-## Dataset
+## 1. Dataset
 
 Flickr30k is small by CLIP standards, but it uses a standard benchmark partition called the **Karpathy split** (~29.8k train / 1k val / 1k test), so retrieval results are directly comparable to other papers. The HuggingFace version stores all ~31k rows in a single table - I filter by a `split` column to get the actual train/val/test buckets.
 
@@ -314,7 +322,7 @@ def __getitem__(self, idx):
     return image, tokens
 ```
 
-## Image encoder
+## 2. Image encoder
 
 Training a ViT from scratch on only 29k images doesn't really work - there's just not enough data for the model to learn good visual features. So instead I use a **pretrained `vit_base_patch32_224` from [timm](https://github.com/huggingface/pytorch-image-models)**, which already understands visual concepts from ImageNet. The idea is to finetune it to align with the text embeddings, rather than learn vision from scratch.
 
@@ -351,7 +359,7 @@ class VisionEncoder(nn.Module):
         return F.normalize(self.proj(x), dim=-1)
 ```
 
-## Text encoder
+## 3. Text encoder
 
 The text encoder is a small causal transformer trained from scratch: 6 layers, 512-wide, 8 attention heads - roughly GPT-2 small scale. I use OpenAI's BPE tokenizer (via the `clip` package) with a 49,408-token vocabulary and a max sequence length of 77.
 
@@ -368,7 +376,7 @@ def forward(self, tokens):
     return F.normalize(self.proj(x[torch.arange(B), eos]), dim=-1)
 ```
 
-## The similarity matrix and InfoNCE loss
+## 4. The similarity matrix and InfoNCE loss
 
 For a batch of $N$ image-text pairs, I compute all $N \times N$ cosine similarities in one matrix multiply (both embeddings are L2-normalized, so dot product = cosine similarity). The diagonal entries are matched pairs; everything off-diagonal is a negative. Then I apply symmetric cross-entropy: each image tries to identify its matched caption among all $N$ texts, and vice versa.
 
@@ -387,7 +395,7 @@ loss = (F.cross_entropy(logits, labels) +
         F.cross_entropy(logits.T, labels)) / 2
 ```
 
-## Temperature
+## 5. Temperature
 
 The temperature $\tau$ is a **learnable parameter** initialized to 0.07 (same as the original CLIP paper). I store it as `log_tau` and clamp it so $\tau$ stays in $[0.01, 100]$ - this prevents the loss from blowing up or collapsing early in training. `scale = exp(log_tau)` is `1/τ`, which multiplies the logits before softmax.
 
@@ -400,7 +408,7 @@ log_tau = self.log_tau.clamp(math.log(1/100), math.log(1/0.01))
 scale   = log_tau.exp()   # this is 1/τ
 ```
 
-## Optimizer and learning rate
+## 6. Optimizer and learning rate
 
 I use **AdamW** with weight decay 0.2, but exclude weight decay from biases, LayerNorm parameters, embeddings, and `log_tau` - decaying those would wrongly pull scale/shift parameters toward zero.
 
@@ -431,7 +439,7 @@ if epoch == cfg.freeze_backbone_epochs + 1:
         p.requires_grad = True
 ```
 
-## MPS optimizations
+## 7. MPS optimizations
 
 Since I'm training on a Mac with Apple Silicon, there are a few things worth calling out that are specific to MPS.
 
@@ -459,7 +467,7 @@ optimizer.zero_grad(set_to_none=True)  # slightly faster than filling with 0
 
 *I hope this section gives you some insights on how you can speed up training on Mac with Apple Sillicon if that's also the deep learning machine you can afford currently. Obviously, it's still painfully slow, but I just observe for a few epochs that things are going well, leave them running and go on a hike and hope that nothing breaks in the meantime.*
 
-## Retrieval evaluation
+## 8. Retrieval evaluation
 
 The standard Flickr30k retrieval benchmark has two directions:
 - **Image→Text (I→T)**: for each of the 1,000 test images, rank all 5,000 captions by cosine similarity and check if any of the image's 5 ground-truth captions appear in the top-K.
@@ -497,19 +505,19 @@ Visualizing the image, the ground truth caption, and the top 5 retrieved caption
 
 Here are some examples where the top 1 retrieved caption matches with the ground truth caption. You can see that the top 2-5 retrieved captions are also close matches with ground truth: 
 
-{{< figure align=center src="/images/clip-correct-1.png" alt="clip-correct-1" title="CLIP correct 1" caption="Top 1 retrieved caption matches with ground truth" width="100%" >}}
+{{< figure align=center src="images/clip-correct-1.png" alt="clip-correct-1" title="CLIP correct 1" caption="Top 1 retrieved caption matches with ground truth" width="100%" >}}
 
-{{< figure align=center src="/images/clip-correct-2.png" alt="clip-correct-1" title="CLIP correct 2" caption="Top 1 retrieved caption matches with ground truth" width="100%" >}}
+{{< figure align=center src="images/clip-correct-2.png" alt="clip-correct-1" title="CLIP correct 2" caption="Top 1 retrieved caption matches with ground truth" width="100%" >}}
 
-{{< figure align=center src="/images/clip-correct-3.png" alt="clip-correct-1" title="CLIP correct 3" caption="Top 1 retrieved caption matches with ground truth" width="100%" >}}
+{{< figure align=center src="images/clip-correct-3.png" alt="clip-correct-1" title="CLIP correct 3" caption="Top 1 retrieved caption matches with ground truth" width="100%" >}}
 
 And here are some examples where the top 1 retrieved caption does not match with the ground truth caption, but the ground truth caption is still in the list of top 5 retrieved captions. The top 1 is actually a really good match with ground truth, just not exactly correct. Same as above, all retrieved captions are really good descriptions of the image: 
 
-{{< figure align=center src="/images/clip-nearcorrect-1.png" alt="clip-nearcorrect-1" title="CLIP near-correct 1" caption="Ground truth caption is among the top 5 retrieved captions" width="100%" >}}
+{{< figure align=center src="images/clip-nearcorrect-1.png" alt="clip-nearcorrect-1" title="CLIP near-correct 1" caption="Ground truth caption is among the top 5 retrieved captions" width="100%" >}}
 
-{{< figure align=center src="/images/clip-nearcorrect-2.png" alt="clip-nearcorrect-2" title="CLIP near-correct 2" caption="Ground truth caption is among the top 5 retrieved captions" width="100%" >}}
+{{< figure align=center src="images/clip-nearcorrect-2.png" alt="clip-nearcorrect-2" title="CLIP near-correct 2" caption="Ground truth caption is among the top 5 retrieved captions" width="100%" >}}
 
-{{< figure align=center src="/images/clip-nearcorrect-3.png" alt="clip-nearcorrect-3" title="CLIP near-correct 3" caption="Ground truth caption is among the top 5 retrieved captions" width="100%" >}}
+{{< figure align=center src="images/clip-nearcorrect-3.png" alt="clip-nearcorrect-3" title="CLIP near-correct 3" caption="Ground truth caption is among the top 5 retrieved captions" width="100%" >}}
 
 ---
 
@@ -578,5 +586,3 @@ Le, Nhi. "Multimodal AI - Part 1: CLIP". halannhile.github.io (April 2026). http
   url = "https://halannhile.github.io/posts/clip/"
 }
 ```
-
-
