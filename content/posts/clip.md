@@ -290,7 +290,7 @@ My implementation is a single-file PyTorch mini-CLIP (`clip_single.py`), trained
 
 I mean, isn't this beautiful:
 
-{{< figure align=center src="images/clip-karpathy-microgpt.png" alt="clip-karpathy-microgpt" title="Andrej Karpathy's microgpt blog" caption="[Andrej Karpathy blog: microgpt](https://karpathy.github.io/2026/02/12/microgpt/)" width="100%" >}}
+{{< figure align=center src="/images/clip-karpathy-microgpt.png" alt="clip-karpathy-microgpt" title="Andrej Karpathy's microgpt blog" caption="[Andrej Karpathy blog: microgpt](https://karpathy.github.io/2026/02/12/microgpt/)" width="100%" >}}
 
 There are 2 main reasons I will take this approach moving forward. One, it challenged me to figure out what the absolute core essentials of the model are. Second, it significantly speeds up my coding time, which then allows me to read and reimplement more papers (TL;DR: I realized I spent way too much time on DDPM and Improved DDPM, which clearly isn't sustainable). 
 
@@ -497,19 +497,19 @@ Visualizing the image, the ground truth caption, and the top 5 retrieved caption
 
 Here are some examples where the top 1 retrieved caption matches with the ground truth caption. You can see that the top 2-5 retrieved captions are also close matches with ground truth: 
 
-{{< figure align=center src="images/clip-correct-1.png" alt="clip-correct-1" title="CLIP correct 1" caption="Top 1 retrieved caption matches with ground truth" width="100%" >}}
+{{< figure align=center src="/images/clip-correct-1.png" alt="clip-correct-1" title="CLIP correct 1" caption="Top 1 retrieved caption matches with ground truth" width="100%" >}}
 
-{{< figure align=center src="images/clip-correct-2.png" alt="clip-correct-1" title="CLIP correct 2" caption="Top 1 retrieved caption matches with ground truth" width="100%" >}}
+{{< figure align=center src="/images/clip-correct-2.png" alt="clip-correct-1" title="CLIP correct 2" caption="Top 1 retrieved caption matches with ground truth" width="100%" >}}
 
-{{< figure align=center src="images/clip-correct-3.png" alt="clip-correct-1" title="CLIP correct 3" caption="Top 1 retrieved caption matches with ground truth" width="100%" >}}
+{{< figure align=center src="/images/clip-correct-3.png" alt="clip-correct-1" title="CLIP correct 3" caption="Top 1 retrieved caption matches with ground truth" width="100%" >}}
 
 And here are some examples where the top 1 retrieved caption does not match with the ground truth caption, but the ground truth caption is still in the list of top 5 retrieved captions. The top 1 is actually a really good match with ground truth, just not exactly correct. Same as above, all retrieved captions are really good descriptions of the image: 
 
-{{< figure align=center src="images/clip-nearcorrect-1.png" alt="clip-nearcorrect-1" title="CLIP near-correct 1" caption="Ground truth caption is among the top 5 retrieved captions" width="100%" >}}
+{{< figure align=center src="/images/clip-nearcorrect-1.png" alt="clip-nearcorrect-1" title="CLIP near-correct 1" caption="Ground truth caption is among the top 5 retrieved captions" width="100%" >}}
 
-{{< figure align=center src="images/clip-nearcorrect-2.png" alt="clip-nearcorrect-2" title="CLIP near-correct 2" caption="Ground truth caption is among the top 5 retrieved captions" width="100%" >}}
+{{< figure align=center src="/images/clip-nearcorrect-2.png" alt="clip-nearcorrect-2" title="CLIP near-correct 2" caption="Ground truth caption is among the top 5 retrieved captions" width="100%" >}}
 
-{{< figure align=center src="images/clip-nearcorrect-3.png" alt="clip-nearcorrect-3" title="CLIP near-correct 3" caption="Ground truth caption is among the top 5 retrieved captions" width="100%" >}}
+{{< figure align=center src="/images/clip-nearcorrect-3.png" alt="clip-nearcorrect-3" title="CLIP near-correct 3" caption="Ground truth caption is among the top 5 retrieved captions" width="100%" >}}
 
 ---
 
