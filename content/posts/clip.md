@@ -1,6 +1,6 @@
 ---
 title: "Multimodal AI - Part 1: CLIP"
-date: 2026-03-18T00:00:00Z
+date: 2026-04-06T00:00:00Z
 draft: false
 tags: ["multimodal-ai", "vision-language-models"]
 math: true
@@ -16,7 +16,7 @@ This is the problem that **CLIP** (**Contrastive Language–Image Pre-Training**
 
 One of the earliest and most fundamental questions I had regarding multimodal AI was: *"how does a model learn that this image and this sentence are about the same thing?"*. Nobody explicitly labels every image-text pair as "matching" or "not matching". Yet CLIP can take a photo of a golden retriever and rank "a dog playing in the grass" above "a cat sitting on a couch" with remarkable accuracy. 
 
-*The GitHub repo for my PyTorch implementation of mini-CLIP will be linked in the code section.*
+*The GitHub repo for my PyTorch implementation of mini-CLIP can be found here: [halannhile/mini-clip](https://github.com/halannhile/mini-clip).*
 
 # Table of Contents
 
@@ -31,9 +31,11 @@ One of the earliest and most fundamental questions I had regarding multimodal AI
 
 [Section 2: Code](#section-2-code)
 
-[Section 3: Recap & What's Next](#section-3-recap--whats-next)
+[Section 3: Results from the trained model](#section-3-results-from-the-trained-model)
 
-[Useful Resources](#useful-resources)
+[Section 4: Recap & what's next](#section-4-recap--whats-next)
+
+[Useful resources](#useful-resources)
 
 [Citation](#citation)
 
@@ -282,13 +284,237 @@ This is exactly why finetuning CLIP matters so much in practice. A generic CLIP 
 
 # Section 2: Code
 
-*I'm working on a mini-CLIP implementation from scratch in PyTorch, with: a small ViT image encoder, a small transformer text encoder, trained contrastively on [Flickr30k](https://huggingface.co/datasets/nlphuji/flickr30k). I hope I can demonstrate exactly how the similarity matrix, the InfoNCE loss, and the temperature parameter look in real code.*
+You can find my PyTorch implementation of mini-clip [here](https://github.com/halannhile/mini-clip). 
 
-*The GitHub repo link will be added here when ready.*
+My implementation is a single-file PyTorch mini-CLIP (`clip_single.py`), trained on [Flickr30k](https://huggingface.co/datasets/nlphuji/flickr30k) (~29.8k images, 5 captions each). I was definitely inspired by [Andrej Karpathy's `microgpt`](https://karpathy.github.io/2026/02/12/microgpt/) to create a reimplementation with no abstractions, no package structure, everything visible in one file. 
+
+I mean, isn't this beautiful:
+
+{{< figure align=center src="images/clip-karpathy-microgpt.png" alt="clip-karpathy-microgpt" title="Andrej Karpathy's microgpt blog" caption="[Andrej Karpathy blog: microgpt](https://karpathy.github.io/2026/02/12/microgpt/)" width="100%" >}}
+
+There are 2 main reasons I will take this approach moving forward. One, it challenged me to figure out what the absolute core essentials of the model are. Second, it significantly speeds up my coding time, which then allows me to read and reimplement more papers (TL;DR: I realized I spent way too much time on DDPM and Improved DDPM, which clearly isn't sustainable). 
+
+## Dataset
+
+Flickr30k is small by CLIP standards, but it uses a standard benchmark partition called the **Karpathy split** (~29.8k train / 1k val / 1k test), so retrieval results are directly comparable to other papers. The HuggingFace version stores all ~31k rows in a single table - I filter by a `split` column to get the actual train/val/test buckets.
+
+Each image has 5 human-written captions. During training, I randomly pick one of the 5 per step so the model sees varied descriptions across epochs. During val and retrieval eval, I use fixed caption indices for reproducibility.
+
+```python
+def __getitem__(self, idx):
+    img_idx, cap_idx = self.samples[idx]
+    row     = self.data[img_idx]
+    image   = self.transform(row["image"].convert("RGB"))
+    # during training pick a random caption; during val use a fixed one
+    caption = random.choice(row["caption"]) if self.is_train \
+              else row["caption"][cap_idx]
+    # tokenize returns shape [1, L], take [0] to get [L]
+    tokens  = openai_clip.tokenize([caption], context_length=cfg.context_length,
+                                    truncate=True)[0]
+    return image, tokens
+```
+
+## Image encoder
+
+Training a ViT from scratch on only 29k images doesn't really work - there's just not enough data for the model to learn good visual features. So instead I use a **pretrained `vit_base_patch32_224` from [timm](https://github.com/huggingface/pytorch-image-models)**, which already understands visual concepts from ImageNet. The idea is to finetune it to align with the text embeddings, rather than learn vision from scratch.
+
+`timm.create_model(..., num_classes=0)` removes the classification head and returns the raw CLS token vector (768-dim for ViT-Base), which I then project down to the shared 256-dim embedding space with a linear layer.
+
+One thing to be careful about here: the pretrained ViT was trained with **ImageNet normalization** (`mean=[0.485, 0.456, 0.406]`, `std=[0.229, 0.224, 0.225]`), not the CLIP-specific constants sometimes seen in other implementations. Using the wrong normalization would feed off-distribution pixels to the pretrained backbone.
+
+```python
+# standard ImageNet normalization - the pretrained ViT was trained on these,
+# so we use them instead of the CLIP-specific constants
+CLIP_MEAN = [0.485, 0.456, 0.406]
+CLIP_STD  = [0.229, 0.224, 0.225]
+
+class VisionEncoder(nn.Module):
+    """pretrained ViT backbone (timm) + linear projection to shared embed_dim."""
+    def __init__(self):
+        super().__init__()
+        # num_classes=0 removes the classifier head - backbone returns the CLS vector directly
+        self.backbone = timm.create_model(
+            cfg.vit_model,
+            pretrained=True,
+            num_classes=0,
+        )
+        vit_out_dim = self.backbone.num_features   # 768 for vit_base
+        # projection head: dropout → linear; dropout regularizes the small dataset overfitting
+        self.proj = nn.Sequential(
+            nn.Dropout(p=0.1),
+            nn.Linear(vit_out_dim, cfg.embed_dim, bias=False),
+        )
+        nn.init.trunc_normal_(self.proj[1].weight, std=0.02)
+
+    def forward(self, x):
+        x = self.backbone(x)   # [B, 768]
+        return F.normalize(self.proj(x), dim=-1)
+```
+
+## Text encoder
+
+The text encoder is a small causal transformer trained from scratch: 6 layers, 512-wide, 8 attention heads - roughly GPT-2 small scale. I use OpenAI's BPE tokenizer (via the `clip` package) with a 49,408-token vocabulary and a max sequence length of 77.
+
+The sequence is summarized by the hidden state at the **[EOS] position** - in CLIP's tokenization, this is always the highest token id in the row. Since the transformer is causal, [EOS] is the only position that has seen the full sequence, so it's the cleanest single-vector summary of the whole caption.
+
+```python
+def forward(self, tokens):
+    B, N = tokens.shape
+    # token embedding + positional embedding - same idea as GPT
+    x = self.tok_emb(tokens) + self.pos_emb[:N]
+    x = self.ln(self.blocks(x))
+    # the EOS token has the highest id in the sequence - use its position as the summary
+    eos = tokens.argmax(dim=-1)
+    return F.normalize(self.proj(x[torch.arange(B), eos]), dim=-1)
+```
+
+## The similarity matrix and InfoNCE loss
+
+For a batch of $N$ image-text pairs, I compute all $N \times N$ cosine similarities in one matrix multiply (both embeddings are L2-normalized, so dot product = cosine similarity). The diagonal entries are matched pairs; everything off-diagonal is a negative. Then I apply symmetric cross-entropy: each image tries to identify its matched caption among all $N$ texts, and vice versa.
+
+```python
+img = self.encode_image(images)   # [B, D], unit vectors
+txt = self.encode_text(tokens)    # [B, D], unit vectors
+
+# dot product = cosine sim (vectors are already unit norm)
+# diagonal of the [B, B] matrix are the matched image-caption pairs
+logits  = img @ txt.T * scale
+# label for sample i is i - i.e. the correct match is always on the diagonal
+labels  = torch.arange(len(img), device=img.device)
+
+# two cross-entropies: one treating images as queries, one treating captions
+loss = (F.cross_entropy(logits, labels) +
+        F.cross_entropy(logits.T, labels)) / 2
+```
+
+## Temperature
+
+The temperature $\tau$ is a **learnable parameter** initialized to 0.07 (same as the original CLIP paper). I store it as `log_tau` and clamp it so $\tau$ stays in $[0.01, 100]$ - this prevents the loss from blowing up or collapsing early in training. `scale = exp(log_tau)` is `1/τ`, which multiplies the logits before softmax.
+
+```python
+# log(1/0.07) ≈ 2.659 → τ starts at 0.07 (same default as openai's CLIP)
+self.log_tau = nn.Parameter(torch.tensor(2.659))
+
+# clamp so τ stays in [0.01, 100] - avoids loss blowing up or collapsing
+log_tau = self.log_tau.clamp(math.log(1/100), math.log(1/0.01))
+scale   = log_tau.exp()   # this is 1/τ
+```
+
+## Optimizer and learning rate
+
+I use **AdamW** with weight decay 0.2, but exclude weight decay from biases, LayerNorm parameters, embeddings, and `log_tau` - decaying those would wrongly pull scale/shift parameters toward zero.
+
+Since the ViT backbone is pretrained, I give it a much lower learning rate (100x lower than the projection heads and text encoder). The backbone's features are already good, so I don't want aggressive updates to undo that. I also **freeze the backbone for the first 2 epochs** so the projection heads can stabilize before the backbone starts moving - without this, the pretrained features shift too fast and the model starts overfitting quickly on the small dataset.
+
+(Lots of training time was wasted until I could figure out why the model was overfitting).
+
+The lr schedule is a **linear warmup** over 2 epochs, then **cosine decay** to 0. Each param group has its `initial_lr` stamped at the start so the schedule applies as a multiplier, which preserves the backbone/other lr ratio throughout training.
+
+```python
+backbone_lr = cfg.lr * cfg.backbone_lr_scale
+return torch.optim.AdamW(
+    [{"params": backbone_decay,   "weight_decay": cfg.weight_decay, "lr": backbone_lr},
+     {"params": backbone_nodecay, "weight_decay": 0.0,              "lr": backbone_lr},
+     {"params": other_decay,      "weight_decay": cfg.weight_decay, "lr": cfg.lr},
+     {"params": other_nodecay,    "weight_decay": 0.0,              "lr": cfg.lr}],
+    lr=cfg.lr, betas=(0.9, 0.98), eps=1e-6,
+)
+
+# freeze backbone at the start so the projection heads can warm up first
+if cfg.freeze_backbone_epochs > 0:
+    for p in model.image_encoder.backbone.parameters():
+        p.requires_grad = False
+
+# unfreeze backbone once we're past the freeze period
+if epoch == cfg.freeze_backbone_epochs + 1:
+    for p in model.image_encoder.backbone.parameters():
+        p.requires_grad = True
+```
+
+## MPS optimizations
+
+Since I'm training on a Mac with Apple Silicon, there are a few things worth calling out that are specific to MPS.
+
+**bfloat16 autocast.** I use `torch.autocast` with `dtype=torch.bfloat16` during the forward pass. This reduces memory usage and speeds up matrix multiplications on the MPS backend. I picked bfloat16 over float16 specifically because bfloat16 has the same dynamic range as float32 (just less precision), so gradients don't underflow - which is a real problem with float16 on small models. GradScaler (the usual fix for float16 underflow) isn't well supported on MPS anyway, so bfloat16 is the cleaner choice here.
+
+```python
+# bfloat16 autocast on MPS - reduces memory and speeds up compute
+# GradScaler is not supported on MPS, but bfloat16 has a wider dynamic range
+# than float16 so gradient underflow isn't a problem
+if cfg.use_amp and device.type == "mps":
+    _amp_ctx = torch.autocast(device.type, dtype=torch.bfloat16)
+```
+
+**`pin_memory=False`.** MPS uses unified memory (CPU and GPU share the same physical memory), so pinning tensors for faster CPU→GPU transfer doesn't apply and actually triggers a warning. I disable it explicitly.
+
+**`persistent_workers=True`.** DataLoader workers are kept alive between batches rather than being respawned each epoch. This saves a noticeable amount of overhead when loading Flickr30k images.
+
+**`set_to_none=True` in `zero_grad`.** Instead of filling gradients with zeros, PyTorch deallocates the gradient tensors entirely. This is slightly faster and uses less memory since the tensors don't exist until the next backward pass.
+
+```python
+optimizer.zero_grad(set_to_none=True)  # slightly faster than filling with 0
+```
+
+**CPU thread configuration.** Since MPS offloads compute to the GPU but data preprocessing still runs on CPU, tuning `cpu_num_threads` and `cpu_num_interop_threads` matters. The defaults in `Config` are set to work well for Apple Silicon, but you can adjust them if you notice CPU becoming a bottleneck during data loading.
+
+*I hope this section gives you some insights on how you can speed up training on Mac with Apple Sillicon if that's also the deep learning machine you can afford currently. Obviously, it's still painfully slow, but I just observe for a few epochs that things are going well, leave them running and go on a hike and hope that nothing breaks in the meantime.*
+
+## Retrieval evaluation
+
+The standard Flickr30k retrieval benchmark has two directions:
+- **Image→Text (I→T)**: for each of the 1,000 test images, rank all 5,000 captions by cosine similarity and check if any of the image's 5 ground-truth captions appear in the top-K.
+- **Text→Image (T→I)**: for each of the 5,000 captions, rank all 1,000 images and check if the parent image is in the top-K.
+
+I report **R@1**, **R@5**, and **R@10** for both directions. R@1 is the strictest - the correct match has to be ranked first.
+
+```python
+# image → text: the 5 correct captions for image i are at indices [5i, 5i+5)
+i2t = recall_at_k(sim,   lambda i: set(range(5*i, 5*i+5)))
+# text → image: caption j belongs to image j // 5
+t2i = recall_at_k(sim.T, lambda j: {j // 5})
+
+print("\nFlickr30k retrieval:")
+print(f"  I→T  R@1: {i2t['R@1']:.1f}%  R@5: {i2t['R@5']:.1f}%  R@10: {i2t['R@10']:.1f}%")
+print(f"  T→I  R@1: {t2i['R@1']:.1f}%  R@5: {t2i['R@5']:.1f}%  R@10: {t2i['R@10']:.1f}%")
+```
+
+For example, this is the result at epoch 10: 
+
+```
+1000 images, 5000 captions
+
+Flickr30k retrieval:
+  I→T  R@1: 50.3%  R@5: 80.0%  R@10: 87.9%
+  T→I  R@1: 37.0%  R@5: 67.2%  R@10: 76.5%
+18:46:58 |   New best R@1 avg: 43.6% → saved best.pt
+```
 
 ---
 
-# Section 3: Recap & What's Next
+# Section 3: Results from the trained model
+
+Visualizing the image, the ground truth caption, and the top 5 retrieved captions: 
+
+Here are some examples where the top 1 retrieved caption matches with the ground truth caption. You can see that the top 2-5 retrieved captions are also close matches with ground truth: 
+
+{{< figure align=center src="images/clip-correct-1.png" alt="clip-correct-1" title="CLIP correct 1" caption="Top 1 retrieved caption matches with ground truth" width="100%" >}}
+
+{{< figure align=center src="images/clip-correct-2.png" alt="clip-correct-1" title="CLIP correct 2" caption="Top 1 retrieved caption matches with ground truth" width="100%" >}}
+
+{{< figure align=center src="images/clip-correct-3.png" alt="clip-correct-1" title="CLIP correct 3" caption="Top 1 retrieved caption matches with ground truth" width="100%" >}}
+
+And here are some examples where the top 1 retrieved caption does not match with the ground truth caption, but the ground truth caption is still in the list of top 5 retrieved captions. The top 1 is actually a really good match with ground truth, just not exactly correct. Same as above, all retrieved captions are really good descriptions of the image: 
+
+{{< figure align=center src="images/clip-nearcorrect-1.png" alt="clip-nearcorrect-1" title="CLIP near-correct 1" caption="Ground truth caption is among the top 5 retrieved captions" width="100%" >}}
+
+{{< figure align=center src="images/clip-nearcorrect-2.png" alt="clip-nearcorrect-2" title="CLIP near-correct 2" caption="Ground truth caption is among the top 5 retrieved captions" width="100%" >}}
+
+{{< figure align=center src="images/clip-nearcorrect-3.png" alt="clip-nearcorrect-3" title="CLIP near-correct 3" caption="Ground truth caption is among the top 5 retrieved captions" width="100%" >}}
+
+---
+
+# Section 4: Recap & what's next
+
 
 CLIP is no longer the absolute peak of vision-language research, and not always SOTA (e.g. research has moved toward coupling stronger text decoders with vision encoders (like BLIP-2) for better performance; newer Generative Multimodal Large Language Models (MLLMs) perform better at complex visual reasoning or understanding spatial relationships). 
 
@@ -304,7 +530,7 @@ But I still want to start this series with CLIP because it remains a staple in p
 
 This may seem a little backwards, but in the next post, I'll go deep on the Vision Transformer (ViT) paper: **[An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale (Google Research, 2021)](https://arxiv.org/abs/2010.11929)** - the architecture behind CLIP's most powerful image models and one that has since become the default backbone for many modern vision and multimodal systems. Understanding ViT well will be very useful when you go through the rest of this series.
 
-# Useful Resources
+# Useful resources
 
 ### Official CLIP resources
 
@@ -328,7 +554,6 @@ This may seem a little backwards, but in the next post, I'll go deep on the Visi
 
 ### Code
 
-
 * [mlfoundations/open_clip](https://github.com/mlfoundations/open_clip) - an open-source reproduction of CLIP with support for many architectures and datasets. It is widely used in research and production, and many recent papers rely on it when they refer to using CLIP because: 1. original CLIP training code from OpenAI was not fully released, 2. OpenCLIP provides scalable training infrastructure, 3. OpenCLIP supports many pretrained checkpoints.
 
 * [moein-shariatnia/OpenAI-CLIP](https://github.com/moein-shariatnia/OpenAI-CLIP)
@@ -338,7 +563,7 @@ This may seem a little backwards, but in the next post, I'll go deep on the Visi
 # Citation
 
 ```
-Le, Nhi. "Multimodal AI - Part 1: CLIP". halannhile.github.io (March 2026). https://halannhile.github.io/posts/clip/
+Le, Nhi. "Multimodal AI - Part 1: CLIP". halannhile.github.io (April 2026). https://halannhile.github.io/posts/clip/
 ```
 
 **BibTeX:**
@@ -349,14 +574,9 @@ Le, Nhi. "Multimodal AI - Part 1: CLIP". halannhile.github.io (March 2026). http
   author = {Nhi},
   journal = {halannhile.github.io},
   year = {2026},
-  month = {March},
+  month = {April},
   url = "https://halannhile.github.io/posts/clip/"
 }
 ```
-
-
-
-
-
 
 
