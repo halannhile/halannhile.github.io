@@ -3,6 +3,7 @@ title: "Multimodal AI - Part 1: CLIP"
 date: 2026-04-06T00:00:00Z
 draft: false
 tags: ["multimodal-ai", "vision-language-models"]
+series: "Multimodal AI"
 math: true
 ShowToc: false
 ---

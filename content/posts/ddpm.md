@@ -3,6 +3,7 @@ title: "Diffusion Models - Part 1: DDPM"
 date: 2026-03-06T00:00:00Z
 draft: false
 tags: ["diffusion-models", "image-generation"]
+series: "Diffusion Models"
 math: true
 ShowToc: false
 ---
