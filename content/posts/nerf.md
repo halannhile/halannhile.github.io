@@ -342,11 +342,73 @@ loss = F.mse_loss(rgb_c.float(), target_b) + F.mse_loss(rgb_f.float(), target_b)
 
 Checkpoints are saved every 10,000 iterations to `checkpoints/lego/`, with a final checkpoint at the end of training. An MP4 video is rendered at 100k iterations and at the end of training.
 
+### What to look for during training
+
+The training loop logs loss and PSNR every 100 iterations. PSNR - Peak Signal-to-Noise Ratio - is just the MSE loss converted into a more interpretable scale:
+
+$$\text{PSNR} = -10 \log_{10}(\text{MSE})$$
+
+Since pixel values are in $[0, 1]$, a lower MSE means a higher PSNR. The scale isn't linear: 30 dB doesn't feel twice as good as 15 dB - each 3 dB gain roughly halves the error. A rough guide:
+
+| PSNR | What it looks like |
+|---|---|
+| < 20 dB | Very blurry, scene is barely recognizable |
+| 20–25 dB | Coarse structure visible, lots of noise and fog |
+| 25–30 dB | Recognizable but soft, missing fine geometry |
+| > 30 dB | Photorealistic quality |
+
+PSNR will fluctuate a lot early on - don't read too much into individual values. What matters is the overall trend. Expect a fast climb in the first 10–20k iterations as the network learns rough geometry, then a slower grind up through the 20s as fine detail fills in. You won't see 30 dB until you're 1/4 - 1/2 way into the training process (I hit 30 dB at around iteration 25,000th). On lego with this setup (400×400, 200k iters, MPS), to my surprised, I got psnr = 33.21 dB at iteration 100,000th. That's why I stopped training to 200,000 iterations, since I already got really high quality rendered video half way into training.
+
+```bash
+iter 000000 | loss 0.2374 | psnr 9.25 dB | lr 5.00e-07
+iter 000100 | loss 0.2738 | psnr 7.78 dB | lr 5.05e-05
+iter 000200 | loss 0.2005 | psnr 10.77 dB | lr 1.01e-04
+iter 000300 | loss 0.1501 | psnr 14.76 dB | lr 1.50e-04
+iter 000400 | loss 0.1400 | psnr 16.70 dB | lr 2.01e-04
+iter 000500 | loss 0.1338 | psnr 17.38 dB | lr 2.51e-04
+iter 000600 | loss 0.1287 | psnr 18.39 dB | lr 3.00e-04
+iter 000700 | loss 0.1212 | psnr 18.79 dB | lr 3.51e-04
+iter 000800 | loss 0.1408 | psnr 18.42 dB | lr 4.01e-04
+iter 000900 | loss 0.1326 | psnr 19.00 dB | lr 4.50e-04
+iter 001000 | loss 0.1246 | psnr 18.88 dB | lr 4.95e-04
+.
+.
+.
+iter 099000 | loss 0.0025 | psnr 33.61 dB | lr 2.01e-04
+iter 099100 | loss 0.0024 | psnr 32.66 dB | lr 2.01e-04
+iter 099200 | loss 0.0027 | psnr 33.00 dB | lr 2.01e-04
+iter 099300 | loss 0.0027 | psnr 32.92 dB | lr 2.00e-04
+iter 099400 | loss 0.0029 | psnr 31.54 dB | lr 2.00e-04
+iter 099500 | loss 0.0027 | psnr 33.57 dB | lr 2.00e-04
+iter 099600 | loss 0.0024 | psnr 32.76 dB | lr 2.00e-04
+iter 099700 | loss 0.0025 | psnr 32.82 dB | lr 2.00e-04
+iter 099800 | loss 0.0027 | psnr 32.76 dB | lr 1.99e-04
+iter 099900 | loss 0.0025 | psnr 32.44 dB | lr 1.99e-04
+iter 100000 | loss 0.0023 | psnr 33.21 dB | lr 1.99e-04
+  → saved ./checkpoints/lego/ckpt_100000.pt
+```
+
+The original NeRF paper reports **32.54 dB** on lego at 300k iterations with a V100. If you see a gap between their number and yours, it mostly comes down to compute: they trained longer, at full resolution (800×800), with a bigger batch. If you're anywhere in the 30–32 dB range by the end, you've essentially reproduced the paper.
+
+*Take it from me and observe your training logs closely. During my first attempt training NeRF on Lego, I left the model running and didn't notice that my psnr barely increased, which is a really bad sign that the model is not learning anything. I wasted hours because of this negligence. Turns out, it was a silent fatal bug with gradient clipping and a few other mistakes due to MPS optimizations. Just look at how I only got to 9+ dB at iteration 75k here...*
+
+```bash
+iter 075000 | loss 0.1141 | psnr 9.51 dB | lr 2.51e-04
+iter 075100 | loss 0.1249 | psnr 9.12 dB | lr 2.50e-04
+iter 075200 | loss 0.1276 | psnr 9.02 dB | lr 2.50e-04
+iter 075300 | loss 0.1114 | psnr 9.62 dB | lr 2.50e-04
+iter 075400 | loss 0.1162 | psnr 9.44 dB | lr 2.50e-04
+iter 075500 | loss 0.1258 | psnr 9.09 dB | lr 2.49e-04
+iter 075600 | loss 0.1331 | psnr 8.86 dB | lr 2.49e-04
+iter 075700 | loss 0.1239 | psnr 9.15 dB | lr 2.49e-04
+iter 075800 | loss 0.1159 | psnr 9.44 dB | lr 2.49e-04
+```
+
 ---
 
 ## 8. MPS optimizations
 
-I've been building all these projects on my trusty Macbook Pro 2024 with Apple M4 Max chip, since I have no access to GPUs and don't want to think about using cloud-based solutions such as Colab - I just have no energy left and only want to do everything from my terminal and IDE. Besides, I also believe that AI research should be accessible to everyone regardless of whether they have access to compute or not. So as long as I can make it work on MPS, I'm happy. I can always learn more about CUDA when I have the chance to.
+I've been building all these projects on my trusty Macbook Pro 2024 with Apple M4 Max chip, since I have no access to GPUs and don't want to think about using cloud-based solutions such as Colab - I only want to do everything from my terminal and IDE. Besides, I also believe that AI research should be accessible to everyone regardless of whether they have access to compute or not. So as long as I can make it work on MPS, I'm happy. I can always learn more about CUDA when I have the chance to.
 
 Training on Apple Silicon MPS works out of the box but leaves performance on the table. `nerf_single.py` adds five optimizations on top of the baseline:
 
